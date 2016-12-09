@@ -10,6 +10,9 @@ y eficiente en el manejo de memoria. El archivo `cuentacot.ado` disponible
 en el directorio principal de este repositorio es una version antigua (disponible
 en SSC)
 
+Adicionalmente, en la carpeta `pagossc` se encuentra otro modulo que tiene
+como objetivo calcular monto de los pagos del seguro de cesantia.
+
 # Install
 
 Para instalar el modulo debe ejecutar el do-file `ado/compila_ccot.do`

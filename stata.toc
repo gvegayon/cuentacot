@@ -4,4 +4,5 @@ d Modulos de Stata por George Vega
 d Colecci{c o'}n de modulos de stata
 
 p cuentacot2 Contador de cotizaciones
+p pagossc Calcula pagos del SC
 
