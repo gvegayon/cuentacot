@@ -1,0 +1,17 @@
+*--- BEGIN --- myprog.pkg -----------------------------------
+v 1.13.10
+d pagossc. Calcula pagos a los que un beneficiario del SC tiene acceso
+d George G. Vega
+d Distribution-Date: 20131014
+
+* I can also insert comments; these will not be displayed.
+* f lines name the files that comprise your package:
+
+f pagossc/ado/pagossc.ado
+f pagossc/ado/pagossc.sthlp
+f pagossc/ado/pagossci.ado
+f pagossc/ado/pagossci.sthlp
+f pagossc/ado/pagossc_source.sthlp
+F pagossc/ado/lpagossc.mlib
+
+*--- END ----- myprog.pkg -----------------------------------

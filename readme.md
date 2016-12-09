@@ -13,6 +13,11 @@ en SSC)
 Adicionalmente, en la carpeta `pagossc` se encuentra otro modulo que tiene
 como objetivo calcular monto de los pagos del seguro de cesantia.
 
+# IMPORTANTE
+
+Este software no viene con ningun tipo de garantias. Uselo bajo su propia
+responsabilidad.
+
 # Install
 
 Para instalar el modulo debe ejecutar el do-file `ado/compila_ccot.do`
