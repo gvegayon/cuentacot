@@ -1,0 +1,306 @@
+\documentclass[8pt]{beamer}
+
+\usetheme{spensiones}
+%\usetheme{default}
+%\useoutertheme{shadow}
+%\usecolortheme{seagull}
+%\usefonttheme{structuresmallcapsserif}
+%\setbeamertemplate{caption}[numbered]
+\setbeamercovered{invisible}
+
+\usepackage{hyperref}
+\usepackage[utf8x]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{booktabs, tabularx, multirow, multicol}
+\usepackage{epstopdf}
+
+\usepackage{ulem}
+
+\def\tit{Cuentas Difíciles}
+\def\subtit{Implementación del comando {\tt cuentacot}}
+
+\title[\subtit]{\tit}
+\subtitle{\subtit}
+\author[GVY]{George Vega Y.}
+\institute[SPensiones]{\normalsize Superintendencia de Pensiones}
+\date{enero de 2012}
+
+%\usepackage{pgfpages}
+%\pgfpagesuselayout{2 on 1}[a4paper,border shrink=5mm]
+
+% Para insertar el logo
+%\logo{\includegraphics[scale=.1]{I:/george/imagenes/logo_spensiones_500x247_byn.pdf}}
+
+\begin{document}
+
+\begin{frame}
+\transdissolve
+\maketitle
+\end{frame}
+
+\frame{
+\frametitle{Contenidos}
+\tableofcontents
+}
+
+\section{Introducción}
+\frame{\frametitle{Contenidos}\tableofcontents[current]}
+\begin{frame}
+\frametitle{Cuentas Complejas}
+\framesubtitle{¿Por qué cuentas complejas?}
+Cada cuenta de cotizaciones tiene su grado de complejidad. \pause Es por eso que, al momento de realizar cuentas, es necesario recordar que:\pause
+\begin{itemize}
+\item Los datos observados no corresponden a periodos continuos perse. \pause
+\item Si se restringen a ventanas de tiempo, el problema anterior se acentúa \pause
+\item La solución de expandir los datos implica una disminución en el rendimiento y memoria disponible. \pause Y aún así sigue siendo complejo \pause
+\item Las multicotizaciones es otro problema, al igual que los cambios de empleador o tipo de contrato.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{\tt cuentacot}
+¿Qué es {\tt cuentacot}?
+\begin{quote}
+Es un comando de Stata diseñado para abordar aquellas problemáticas. \pause Ideado inicialmente para el uso en la Base de Datos del Seguro de Censantía, las cuentas que el algoritmo realiza funcionan para cualquier base de datos compuestas por observaciones mensuales de individuos, \pause independientemente tengan que ver o con cotizaciones o con remuneraciones.
+\end{quote}
+\end{frame}
+
+\section{Implementación}
+\frame{\frametitle{Contenidos}\tableofcontents[current]}
+
+\begin{frame}
+\frametitle{Características generales}
+\begin{itemize}[<+->]
+\item Para uso de bases de datos de remuneraciones/cotizaciones.
+\item Genera variables de tipo {\it dicotómicas} en base a algoritmo de cuenta de número de cotizaciones para cada momento del tiempo (observación).
+\item Las variables principales a especificar en el contador corresponden a {\bf periodo} (campo numérico de fecha en formato YYYYMM), {\bf persona} (variable id del individuo) y, opcionalmente, {\bf empleador} (variable id del empleador).
+\item En base al campo {\bf periodo}, el algoritmo determina qué observaciones son válidas para el cálculo en los resultados de {\bf menncont} y {\bf menndiscont} para cada momento del tiempo\footnote<.->{Este punto es importante pues el comando considera ventanas de tiempo entre observaciones de un mismo individuo; por lo que 3 observaciones seguidas no son consideradas como 3 remuneraciones/cotizaciones continuas necesariamente, depende del periodo en que se reliza cada una.}.
+\item Si alguna de las variables a generar ya existe, por defecto el comando la reemplaza por la nueva.
+
+\item El comando conserva el orden original de la base de datos antes de ser ejecutado.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Sintaxis}
+
+El comando requiere de 2 variables al menos para poder funcionar. \pause {\tt periodo} (variable numérica en formato {\tt YYYYMM}) y {\tt persona} (id del individuo, típicamente el correl).\pause
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo persona}\uncover<3-3>{, dis // Generaría variable cuenta disc}\pause
+    [{\it{}empleador}], [{\it\uline{k}eep \color{blue} \hyperlink{diapo:cuentas}{cuentas}  \hyperlink{diapo:parametros}{parametros variables.adicionales}}]
+\end{semiverbatim}
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+\frametitle{Cuentas disponibles}
+\label{diapo:cuentas}
+\begin{description}
+\item[\tt \uline{dis}continuas] Genera variable de cuenta de cotizaciones discontinuas y la almacena como {\bf cuenta\_cot\_dis}.
+\item[\tt \uline{cont}inuas] Genera variable dicotómica en base a cuenta de cotizaciones continuas, donde {\bf cotiza\_continuas`ncot'} es igual a 1 si {\bf cuenta\_cot\_cont} $>=$ {\bf ncot}.
+\item[\tt \uline{contemp}leador] Genera variable dicotómica en base a cuenta de cotizaciones continuas con el mismo empleador, donde {\bf cot\_`ncot'\_emp\_cont}
+es igual a 1 si {\bf cuenta\_cot\_`ncot'\_emp\_cont} $>=$ {\bf ncot}.
+
+\item[\tt \uline{empl}eador] Genera variable dicotómica en base a cuenta de cotizaciones discontinuas con el mismo empleador, donde {\bf cot\_`ncot'\_emp\_dis} es igual a 1 si {\bf `cuenta\_`ncot'\_ult\_cot\_emp'} $>=$ {\bf ncot}.
+
+\item[\tt \uline{mennc}ont] Genera variable dicotómica en base a cuenta de cotizaciones continuas en los últimos nper periodos, donde {\bf cot\_`ncot'\_en\_`nper'\_cont} es igual a 1 si {\bf cuenta\_cot\_`ncot'\_en\_`nper'\_cont} $>=$ {\bf ncot}
+
+\indent El resultado se puede leer como 
+
+{\it ``{\bf ncot} cotizaciones continuas en los últimos {\bf nper} periodos''}
+
+\item[\tt \uline{mennd}iscont]  Genera variable dicotómica en base a cuenta de cotizaciones discontinuas en los últimos nper periodos, donde {\bf cot\_`ncot'\_en\_`nper'\_dis} es igual a 1 si {\bf cuenta\_cot\_`ncot'\_en\_`nper'\_dis} $>=$ {\bf ncot}.
+
+El resultado se puede leer como 
+
+\indent {\it ``{\bf ncot} cotizaciones discontinuas en los últimos {\bf nper} periodos''}
+
+\end{description}
+\end{frame}
+
+\begin{frame}
+\frametitle{Parámetros y Variables Adicionales\label{diapo:parametros}}
+\pause
+\begin{itemize}
+\item Parámetros
+\begin{description}
+\item [\tt \uline{nc}ot]Entero. Número de cotizaciones (por defecto 12) a considerar en el cálculo de {\bf continuas, contemp, menncont} y {\bf menndisc}.
+\item [\tt \uline{np}er]Entero. Número de periodos (por defecto 24) a considerar en el cálculo de {\bf menncont} y {\bf menndisc}.
+\end{description}
+\pause
+\item Variables Adicionales
+\begin{description}
+\item [\tt \uline{ns}olic({\it varname})] Variable que contiene el número de solicitud. Se utiliza para considerar solicitudes de beneficio de modo tal de llevar los contadores de cotizaciones continuas a 0. El comando identifica un periodo como solicitud cuando {\bf nsolic} deja de ser {\it missing}
+\item [\tt \uline{tip}con({\it varname})] Variable que contiene el tipo de contrato.  Se utiliza para considerar el tipo de contrato al momento de la cuenta de cotizaciones continuas ({\bf continuas}). Realizando cuenta de cotizaciones sólo cuando {\bf tipcon} es igual a 1, i.e. personas con contrato indefinido.
+\end{description}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{table}
+\caption{Variables y parámetros utilizados por cada cuenta\label{tab:efectos}}
+\begin{tabular}{m{50}*{5}{m{40pt}<{\centering}}}
+\toprule
+\multirow{2}{*}{Cuentas} & \multicolumn{3}{c}{Variables} & \multicolumn{2}{c}{Parámetros} \\
+\cmidrule(r){2-4} \cmidrule(r){5-6}
+& nsolic & tipcon & empleador & nper & ncot \\
+\midrule
+\uline{dis}continuas & X & & & &  \\
+\uline{cont}inuas & X & X & & & X \\
+\uline{contemp}leador & X & X & X & & X \\
+\uline{emp}leador & X & X & X & & X \\
+\uline{mennd}iscont & X & & & X & X \\
+\uline{mennc}ont & X & & & X & X \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+\section{Ejemplos y casos de uso}
+\frame{\frametitle{Contenidos}\tableofcontents[current]}
+
+\begin{frame}
+\frametitle{Escenarios de Prueba}
+Junto con mostrar el uso del comando, revisaremos su comportamiento en los siguientes escenarios: \pause
+\begin{itemize}[<+->]
+\item Individuo que cotiza siempre \hyperlink{caso1}{\beamergotobutton{ver}}
+\item Individuo que deja de cotizar en 1 periodo \hyperlink{caso2}{\beamergotobutton{ver}}
+\item Individuo que cotiza siempre pero cambia de empleador \hyperlink{caso3}{\beamergotobutton{ver}}
+\item Individuo que cotiza siempre pero cambia de tipo de contrato \hyperlink{caso4}{\beamergotobutton{ver}}
+\item Individuo con doble cotización en 1 periodo \hyperlink{caso5}{\beamergotobutton{ver}}
+\item Individuo con solicitud de desempleo \hyperlink{caso6}{\beamergotobutton{ver}}
+\item Individuo con grandes lagunas \hyperlink{caso7}{\beamergotobutton{ver}}
+\end{itemize}
+\hypertarget<8>{escenarios}{}
+\end{frame}
+
+\begin{frame}[fragile, label=caso1]
+\frametitle{Individuo que cotiza siempre}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper}, nc({\color{blue}3}) {\color{blue}dis cont k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Carlos}
+\scalebox{.6}{
+\input{caso1_siempre.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile, label=caso2]
+\frametitle{Individuo que deja de cotizar en 1 periodo}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper}, nc({\color{blue}3}) {\color{blue}dis cont k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Mateo}
+\scalebox{.6}{
+\input{caso2_1_laguna.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile, label=caso3]
+\frametitle{Individuo que cotiza siempre pero cambia de empleador}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) {\color{blue}dis cont emp contemp k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Camila}
+\scalebox{.6}{
+\input{caso3_cambia_empleador.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile, label=caso4]
+\frametitle{Individuo que cotiza siempre pero cambia de tipo de contrato}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) {\color{blue}dis cont emp contemp k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Gustavo}
+\scalebox{.6}{
+\input{caso4_cambia_contrato.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile, label=caso5]
+\frametitle{Individuo con doble cotización en 1 periodo}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) {\color{blue}dis cont emp contemp k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Paola}
+\scalebox{.6}{
+\input{caso5_multicot.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile, label=caso6]
+\frametitle{Individuo con solicitud de desempleo}
+
+Primero sin solicitud
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) np({\color{blue}6}) {\color{blue}dis cont menncont menndis k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de Miguel}
+\scalebox{.6}{
+\input{caso6a_solicitud.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Individuo con solicitud de desempleo}
+Ahora con solicitud
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) np({\color{blue}6}) ns({\color{blue}nsolic}) {\color{blue}dis cont menncont menndis k}
+\end{semiverbatim}\pause\begin{table}
+\caption{Cotizaciones de Miguel}
+\scalebox{.6}{
+\input{caso6b_solicitud.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\begin{frame}[fragile,label=caso7]
+\frametitle{Individuo con grandes lagunas}
+
+\begin{semiverbatim}
+{\bf cuentacot}{\it periodo idper idemp}, nc({\color{blue}3}) np({\color{blue}6}) ns({\color{blue}nsolic}) {\color{blue}dis cont menncont menndis k}
+\end{semiverbatim}
+\pause
+\begin{table}
+\caption{Cotizaciones de María}
+\scalebox{.6}{
+\input{caso7_grandes_lagunas.tex}
+}
+\end{table}
+\hyperlink{escenarios}{\beamergotobutton{volver}}
+\end{frame}
+
+\end{document}
