@@ -1,0 +1,46 @@
+*--- BEGIN --- myprog.pkg -----------------------------------
+v 1.14.2
+d cuentacot2: Contador de cotizaciones
+d Distribution-Date: 20140220
+d George G. Vega
+d Modulo de stata contar cotizaciones.
+
+* I can also insert comments; these will not be displayed.
+* f lines name the files that comprise your package:
+
+f cuentacot/ado/ccset.ado
+f cuentacot/ado/_cc_check_config.ado
+f cuentacot/ado/_cc_check_newvar.ado
+
+f cuentacot/ado/cccont.ado
+f cuentacot/ado/cccont_en_n.ado
+f cuentacot/ado/cccont_en_n_empl.ado
+
+f cuentacot/ado/ccdis.ado
+f cuentacot/ado/ccdis_en_n.ado
+
+f cuentacot/ado/ccpromedio.ado
+f cuentacot/ado/ccbeneficios.ado
+f cuentacot/ado/ccsaldo_cic.ado
+
+F cuentacot/ado/lccot.mlib
+
+* Archivos de ayuda
+f cuentacot/ado/ccset.sthlp
+f cuentacot/ado/cuentacot2.sthlp
+f cuentacot/ado/ccot_source.sthlp
+
+f cuentacot/ado/cccont.sthlp
+f cuentacot/ado/cccont_en_n.sthlp
+f cuentacot/ado/cccont_en_n_empl.sthlp
+
+f cuentacot/ado/ccdis.sthlp
+f cuentacot/ado/ccdis_en_n.sthlp
+
+f cuentacot/ado/ccpromedio.sthlp
+f cuentacot/ado/ccbeneficios.sthlp
+f cuentacot/ado/ccsaldo_cic.sthlp
+
+f cuentacot/ado/ccanalizaempl.ado
+
+*--- END ----- myprog.pkg -----------------------------------

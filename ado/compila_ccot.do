@@ -36,13 +36,14 @@ mata: mata mlib create lccot, replace
 mata: mata mlib add lccot *()
 
 /* Archivos de ayuda mata */
-run ../../dev_tools/build_source_hlp.mata
-mata:
+// Necesitas instalar devtools (github.com/gvegayon/devtools)
+// run ../../dev_tools/build_source_hlp.mata
+/*mata:
 archmata = dir(".","files","*.mata")
 _sort(archmata,1)
-build_source_hlp(archmata, "ccot_source.sthlp", 1)
+dt_moxygen(archmata, "ccot_source.sthlp", 1)
 end
-
+*/
 
 net install cuentacot2, replace force
 
