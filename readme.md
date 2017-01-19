@@ -24,11 +24,13 @@ responsabilidad.
 2.  Descomprime el zip y obten el dir completo, por ejemplo /home/george/Downloads/cuentacot-master
 3.  Desde stata, usa los siguientes comandos
 
-    ```
-    . net from /home/george/Downloads/cuentacot-master
-    . net install cuentacot2
-    . mata mata mlib query
-    ```
+```
+. net from /home/george/Downloads/cuentacot-master
+
+. net install cuentacot2
+. mata mata mlib query
+```
+
 4.  Para estar seguro que la instalacion fue un exito, deberias poder utilizar los
     archivos ejemplos_cuentacot2.do junto con el dta set_test.dta
     
