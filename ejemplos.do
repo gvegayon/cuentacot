@@ -13,10 +13,10 @@ vers 11
 
 set more off
 
-cd I:/programa_cuenta_cot/
+// cd I:/programa_cuenta_cot/
 
 use set_test.dta, clear
-do cuentacot.ado
+//do cuentacot.ado
 /*
 // Calcular cotizaciones discontinuas
 cuentacot periodo idper idemp, dis ns(nsolic)
