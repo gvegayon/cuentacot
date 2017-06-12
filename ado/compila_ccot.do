@@ -5,14 +5,7 @@ set more off
 set trace off
 mata mata clear
 
-if ("$S_OS" == "Windows") {
-	cd I:\george\comandos_paquetes_librerias\stata\cuentacot/ado
-	net from I:\george\comandos_paquetes_librerias\stata\
-}
-else {
-	cd ~/../investigacion/george/comandos_paquetes_librerias/stata/cuentacot/ado
-	net from ~/../investigacion/george/comandos_paquetes_librerias/stata/
-}
+net from /home/george/Dropbox/repos/cuentacot/
 
 set matastrict on
 
@@ -38,7 +31,8 @@ mata: mata mlib add lccot *()
 /* Archivos de ayuda mata */
 // Necesitas instalar devtools (github.com/gvegayon/devtools)
 // run ../../dev_tools/build_source_hlp.mata
-/*mata:
+/*
+mata:
 archmata = dir(".","files","*.mata")
 _sort(archmata,1)
 dt_moxygen(archmata, "ccot_source.sthlp", 1)
@@ -49,4 +43,4 @@ net install cuentacot2, replace force
 
 mata mata mlib query
 
-do ejemplos.do
+do ../ejemplos.do
