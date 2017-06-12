@@ -20,15 +20,18 @@ mata: mata mlib add lpagossc *(), dir(pagossc/ado)
 /* Archivos de ayuda mata */
 // Necesitas instalar devtools (github.com/gvegayon/devtools)
 // run ../../dev_tools/build_source_hlp.mata
-/*
+
+cd pagossc/ado
+
 mata:
 archmata = dir(".","files","*.mata")
 _sort(archmata,1)
-dt_moxygen(archmata, "ccot_source.sthlp", 1)
+dt_moxygen(archmata, "pagossc_source.sthlp", 1)
 end
-*/
 
-// net install cuentacot2, replace force dir(pagossc/ado)
+
+net from /home/george/Dropbox/repos/cuentacot
+net install pagossc, replace force
 
 mata mata mlib query
 
